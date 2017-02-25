@@ -9,6 +9,13 @@ which will be the window itself.
 
 4. `npm start`
 
+##[https://github.com/electron/electron/blob/master/docs/api/web-contents.md](BrowserWindow webContents)
+It's an EventEmitter that lives inside the main process that connects to renderer processes.
+It has methods, such as `send('navigate', url)`, and events (`on`), such as `will-navigate`.
+
+##[https://github.com/electron/electron/blob/master/docs/api/ipc-renderer.md](electron ipcRenderer)
+The reverse of webContents. This lives inside the renderer and it connects to the main process.
+
 
 ### Loading from an URL
 
@@ -31,7 +38,12 @@ const index = path.join(__dirname, 'index.html');
 The `join` operator takes care of the difference in "/" and "\" on different OSs.
 Lastly, don't forget the protocol: `file:///`.
 
-The issue 
+Decode the URI, just to be sure, so you avoid special characters. To do that, either:
+* On the renderer, `decodeURI(${urlString})`
+* On node, require the `url` module and use `url.parse`
+
+
+
 
 
 ## Architecture
@@ -43,3 +55,19 @@ Heavy lifting is done by the renderer code itself
 
 ## Monaco
 1. `npm install --save monaco-loader`
+
+```js
+const loader = require('monaco-loader')
+
+document.addEventListener('DOMContentLoaded', () => {
+  loader().then((monaco) => {
+    let containerEl = document.getElementById("container");
+    let monacoOptions = {
+      language: 'javascript',
+      theme: 'vs-dark',
+      automaticLayout: true
+    };
+    let editor = monaco.editor.create(containerEl, monacoOptions);
+  })
+})
+```
