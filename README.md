@@ -71,3 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 })
 ```
+
+## electron-forge
+Final code with electron-forge implemented can be found at:
+[https://github.com/felixrieseberg/electron-code-editor](https://github.com/felixrieseberg/electron-code-editor)
