@@ -4,6 +4,19 @@ const { ipcRenderer } = require('electron')
 const loader = require('monaco-loader')
 const fs = require('fs') //node's file system
 
+document.addEventListener('keydown', e => {
+  // e.metaKey is a flag for CMD. e.ctrlKey is the same flag for CTRL
+  if (e.metaKey && e.keyCode === 83) {
+    e.preventDefault();
+    saveFile();
+  }
+});
+
+const saveFile = function() {
+  //@@@@@ NEED TO GET THE FILE URL HERE @@@@@
+  fs.writeFile()
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   loader().then((monaco) => {
     let containerEl = document.getElementById("container");
