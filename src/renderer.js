@@ -4,17 +4,15 @@ const { ipcRenderer } = require('electron')
 const loader = require('monaco-loader')
 const fs = require('fs') //node's file system
 
-document.addEventListener('keydown', e => {
-  // e.metaKey is a flag for CMD. e.ctrlKey is the same flag for CTRL
-  if (e.metaKey && e.keyCode === 83) {
-    e.preventDefault();
-    saveFile();
-  }
-});
-
-const saveFile = function() {
+const saveFile = function(editor) {
   //@@@@@ NEED TO GET THE FILE URL HERE @@@@@
-  fs.writeFile()
+  fs.writeFile('test.md', editor.getValue(), (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Saved!");
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -26,6 +24,14 @@ document.addEventListener('DOMContentLoaded', () => {
       automaticLayout: true
     };
     let editor = monaco.editor.create(containerEl, monacoOptions);
+
+    document.addEventListener('keydown', e => {
+      // e.metaKey is a flag for CMD. e.ctrlKey is the same flag for CTRL
+      if (e.metaKey && e.keyCode === 83) {
+        e.preventDefault();
+        saveFile(editor);
+      }
+    });
 
     ipcRenderer.on('navigate', (e, url) => {
       //Command received from index.js
