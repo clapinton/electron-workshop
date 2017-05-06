@@ -1,12 +1,46 @@
 //console.log here gets logged on the window
 
 const { ipcRenderer } = require('electron')
+const { dialog } = require('electron').remote
 const loader = require('monaco-loader')
 const fs = require('fs') //node's file system
 
+let filePath = "";
+
+const createNewEditor = function(monaco, value) {
+  let containerEl = document.getElementById("container");
+  containerEl.innerHTML = ""; //get rid of previous editors
+  let monacoOptions = {
+    value: value,
+    language: 'markdown',
+    theme: 'vs-dark',
+    automaticLayout: true
+  }
+
+  return monaco.editor.create(containerEl, monacoOptions);
+}
+
+const openFile = function(monaco) {
+  filePath = dialog.showOpenDialog({properties: ['openFile']})[0];
+  let editor;
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      editor = createNewEditor(monaco, data);
+    }
+  });
+  
+  return editor;
+}
+
+const checkFilePath = function() {
+    if (filePath === "") filePath = dialog.showSaveDialog();
+}
+
 const saveFile = function(editor) {
-  //@@@@@ NEED TO GET THE FILE URL HERE @@@@@
-  fs.writeFile('test.md', editor.getValue(), (err) => {
+
+  fs.writeFile(filePath, editor.getValue(), (err) => {
     if (err) {
       console.log(err);
     } else {
@@ -17,20 +51,24 @@ const saveFile = function(editor) {
 
 document.addEventListener('DOMContentLoaded', () => {
   loader().then((monaco) => {
-    let containerEl = document.getElementById("container");
-    let monacoOptions = {
-      language: 'markdown',
-      theme: 'vs-dark',
-      automaticLayout: true
-    };
-    let editor = monaco.editor.create(containerEl, monacoOptions);
+    let editor = createNewEditor(monaco, "");
 
     document.addEventListener('keydown', e => {
       // e.metaKey is a flag for CMD. e.ctrlKey is the same flag for CTRL
+
+      // Open File
+      if (e.metaKey && e.keyCode === 79) {
+        e.preventDefault();
+        editor = openFile(monaco);
+      }
+
+      // Save File
       if (e.metaKey && e.keyCode === 83) {
         e.preventDefault();
+        checkFilePath();
         saveFile(editor);
       }
+
     });
 
     ipcRenderer.on('navigate', (e, url) => {
