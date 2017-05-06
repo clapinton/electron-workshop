@@ -4,6 +4,7 @@ const { ipcRenderer } = require('electron')
 const { dialog } = require('electron').remote
 const loader = require('monaco-loader')
 const fs = require('fs') //node's file system
+const MonacoEditor = require('./editor.js');
 
 let filePath = "";
 
@@ -30,7 +31,7 @@ const openFile = function(monaco) {
       editor = createNewEditor(monaco, data);
     }
   });
-  
+
   return editor;
 }
 
@@ -52,6 +53,8 @@ const saveFile = function(editor) {
 document.addEventListener('DOMContentLoaded', () => {
   loader().then((monaco) => {
     let editor = createNewEditor(monaco, "");
+
+    console.log("editor is", new MonacoEditor("<html></html>"));    
 
     document.addEventListener('keydown', e => {
       // e.metaKey is a flag for CMD. e.ctrlKey is the same flag for CTRL
