@@ -39,56 +39,45 @@ const checkFilePath = function() {
     if (filePath === "") filePath = dialog.showSaveDialog();
 }
 
-const saveFile = function(editor) {
-
-  fs.writeFile(filePath, editor.getValue(), (err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("Saved!");
-    }
-  });
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-  loader().then((monaco) => {
-    let editor = createNewEditor(monaco, "");
+  let containerEl = document.getElementById("container");
+  let currentEditor = new MonacoEditor(containerEl, "./test.md", "blableblibloblu");
 
-    console.log("editor is", new MonacoEditor("<html></html>"));    
+  document.addEventListener('keydown', e => {
+    // e.metaKey is a flag for CMD. e.ctrlKey is the same flag for CTRL
 
-    document.addEventListener('keydown', e => {
-      // e.metaKey is a flag for CMD. e.ctrlKey is the same flag for CTRL
+    // Open File
+    if (e.metaKey && e.keyCode === 79) {
+      e.preventDefault();
+      // currentEditor = openFile(monaco);
+    }
 
-      // Open File
-      if (e.metaKey && e.keyCode === 79) {
-        e.preventDefault();
-        editor = openFile(monaco);
+    // Save File
+    if (e.metaKey && e.keyCode === 83) {
+      e.preventDefault();
+      console.log("saving");
+      // checkFilePath();
+      currentEditor.saveFile();
+      console.log("saved");
+    }
+
+  });
+
+  ipcRenderer.on('navigate', (e, url) => {
+    //Command received from index.js
+
+    //Removing the protocol, since Chrome doesn't want it
+    url = decodeURI(url.slice(7));
+
+    fs.readFile(url, 'utf8', (error, result) => {
+      if (!error) {
+        console.log(`No errors. Opening file ${url}`);
+        currentEditor.setModel(monaco.editor.createModel(result, 'markdown'));
+      } else {
+        console.log(`Hit an error:`);
+        console.log(error);
       }
-
-      // Save File
-      if (e.metaKey && e.keyCode === 83) {
-        e.preventDefault();
-        checkFilePath();
-        saveFile(editor);
-      }
-
-    });
-
-    ipcRenderer.on('navigate', (e, url) => {
-      //Command received from index.js
-
-      //Removing the protocol, since Chrome doesn't want it
-      url = decodeURI(url.slice(7));
-
-      fs.readFile(url, 'utf8', (error, result) => {
-        if (!error) {
-          console.log(`No errors. Opening file ${url}`);
-          editor.setModel(monaco.editor.createModel(result, 'markdown'));
-        } else {
-          console.log(`Hit an error:`);
-          console.log(error);
-        }
-      })
     })
   })
+
 })

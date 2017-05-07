@@ -5,7 +5,6 @@
 // • saveNewFile(): shows dialog to set new filePath. Calls save(). Returns err;
 // • this.filePath: stores path of file;
 // • this.editorEl: the monaco editor element itself;
-// • this.errors: stores editor errors
 
 const { dialog } = require('electron').remote;
 const loader = require('monaco-loader');
@@ -22,25 +21,24 @@ class MonacoEditor {
       automaticLayout: true
     };
 
-    this.errors = {};
-    this.editorEl = monaco.editor.create(containerEl, monacoOptions)
-    this.filePath = filePath;
+    loader().then( monaco => {
+      this.editorEl = monaco.editor.create(containerEl, monacoOptions);
+    });
 
+    this.filePath = filePath;
   }
 
   saveFile() {
-    let editorValue = editor.getValue();
-    let hasError = false;
+    let error;
+    let editorValue = this.editorEl.getValue();
     fs.writeFile(this.filePath, editorValue, err => {
-      if (err) {
-        this.errors = err;
-        hasError = true;
-      }
+      if (err) error = err;
     })
 
-    return !hasError;
+    //If save is successful (no error) return true. If not, return the error
+    return error ? error : true;
   }
 
 }
 
-module.exports = MonacoEditor;
+  module.exports = MonacoEditor;
