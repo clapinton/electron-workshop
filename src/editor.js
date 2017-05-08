@@ -40,7 +40,10 @@ class MonacoEditor {
   }
 
   openFile() {
-    const filePath = dialog.showOpenDialog({properties: ['openFile']})[0];
+    const filePath = dialog.showOpenDialog({
+      filters: [{name: 'markdown', extensions: ['md']}],
+      properties: ['openFile']
+    })[0];
     let error;
     fs.readFile(filePath, 'utf8', (err, data) => {
       if (err) {
