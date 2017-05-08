@@ -42,6 +42,7 @@ class MonacoEditor {
 
   openFile() {
     let filePath = dialog.showOpenDialog({
+      title: "Open File...",
       filters: [{name: 'markdown', extensions: ['md']}],
       properties: ['openFile']
     });
@@ -68,6 +69,8 @@ class MonacoEditor {
 
   saveNewFile() {
     const filePath = dialog.showSaveDialog({
+      title: "Save File As...",
+      defaultPath: '.md',
       filters: [{name: 'markdown', extensions: ['md']}]
     })
 
