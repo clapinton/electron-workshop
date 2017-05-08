@@ -41,6 +41,8 @@ const checkFilePath = function() {
 
 document.addEventListener('DOMContentLoaded', () => {
   let containerEl = document.getElementById("container");
+  // It's supposed to be lightweight, so this should be the only editor instance that will be created.
+  // To support tabs, we could create multiple instances.
   let currentEditor = new MonacoEditor(containerEl, "./test.md", "blableblibloblu");
 
   document.addEventListener('keydown', e => {
@@ -49,16 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Open File
     if (e.metaKey && e.keyCode === 79) {
       e.preventDefault();
-      // currentEditor = openFile(monaco);
+      currentEditor.openFile();
     }
 
     // Save File
     if (e.metaKey && e.keyCode === 83) {
       e.preventDefault();
-      console.log("saving");
-      // checkFilePath();
       currentEditor.saveFile();
-      console.log("saved");
     }
 
   });

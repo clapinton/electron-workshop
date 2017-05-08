@@ -1,7 +1,7 @@
 // This will be a class with the following API:
 // • new(container, data): creates a new instance of the editor and attaches itself to the container. Returns instance;
-// • Class.open(): shows dialog and creates new instance with value of selected file. Returns instance;
-// • saveFile(): saves file to this.filePath. Returns err;
+// • openFile(): shows dialog and changes editor value and filePath to that of selected file. Returns true or error;
+// • saveFile(): saves file to this.filePath. Returns true or err;
 // • saveNewFile(): shows dialog to set new filePath. Calls save(). Returns err;
 // • this.filePath: stores path of file;
 // • this.editorEl: the monaco editor element itself;
@@ -39,6 +39,22 @@ class MonacoEditor {
     return error ? error : true;
   }
 
+  openFile() {
+    const filePath = dialog.showOpenDialog({properties: ['openFile']})[0];
+    let error;
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+        error = err;
+      } else {
+        this.editorEl.setValue(data);
+        this.filePath = filePath;
+        console.log("file opened");
+      }
+    });
+
+    //If open is successful (no error) return true. If not, return the error
+    return error ? error : true;
+  }  
 }
 
   module.exports = MonacoEditor;
