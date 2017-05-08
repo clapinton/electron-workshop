@@ -6,39 +6,6 @@ const loader = require('monaco-loader')
 const fs = require('fs') //node's file system
 const MonacoEditor = require('./editor.js');
 
-let filePath = "";
-
-const createNewEditor = function(monaco, value) {
-  let containerEl = document.getElementById("container");
-  containerEl.innerHTML = ""; //get rid of previous editors
-  let monacoOptions = {
-    value: value,
-    language: 'markdown',
-    theme: 'vs-dark',
-    automaticLayout: true
-  }
-
-  return monaco.editor.create(containerEl, monacoOptions);
-}
-
-const openFile = function(monaco) {
-  filePath = dialog.showOpenDialog({properties: ['openFile']})[0];
-  let editor;
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-      console.log(err);
-    } else {
-      editor = createNewEditor(monaco, data);
-    }
-  });
-
-  return editor;
-}
-
-const checkFilePath = function() {
-    if (filePath === "") filePath = dialog.showSaveDialog();
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   let containerEl = document.getElementById("container");
   // It's supposed to be lightweight, so this should be the only editor instance that will be created.
