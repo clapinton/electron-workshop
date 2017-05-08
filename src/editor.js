@@ -31,6 +31,7 @@ class MonacoEditor {
   saveFile() {
     let error;
     let editorValue = this.editorEl.getValue();
+    console.log("path is ", this.filePath);
     fs.writeFile(this.filePath, editorValue, err => {
       if (err) error = err;
     })
@@ -54,10 +55,23 @@ class MonacoEditor {
         console.log("file opened");
       }
     });
-
+    
     //If open is successful (no error) return true. If not, return the error
     return error ? error : true;
   }  
+
+  saveNewFile() {
+    const filePath = dialog.showSaveDialog({
+      filters: [{name: 'markdown', extensions: ['md']}]
+    })
+
+    // If the user cancels the dialog, filePath will be undefined
+    if (filePath) {
+      this.filePath = filePath;
+      return this.saveFile();
+    }
+  }
+
 }
 
   module.exports = MonacoEditor;

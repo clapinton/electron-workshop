@@ -21,11 +21,18 @@ document.addEventListener('DOMContentLoaded', () => {
       currentEditor.openFile();
     }
 
-    // Save File
+    // Save File and Save New File
     if (e.metaKey && e.keyCode === 83) {
       e.preventDefault();
-      currentEditor.saveFile();
+      if (e.shiftKey) {
+        currentEditor.saveNewFile();
+      } else {
+        currentEditor.saveFile();
+      }
     }
+
+    // Save New File
+
 
   });
 
