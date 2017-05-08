@@ -41,10 +41,16 @@ class MonacoEditor {
   }
 
   openFile() {
-    const filePath = dialog.showOpenDialog({
+    let filePath = dialog.showOpenDialog({
       filters: [{name: 'markdown', extensions: ['md']}],
       properties: ['openFile']
-    })[0];
+    });
+
+    // If the user cancels the dialog, filePath will be undefined
+    if (!filePath) return false;
+
+    // showOpenDialog returns String[], so we need to get the first element
+    filePath = filePath[0];
     let error;
     fs.readFile(filePath, 'utf8', (err, data) => {
       if (err) {
@@ -66,10 +72,10 @@ class MonacoEditor {
     })
 
     // If the user cancels the dialog, filePath will be undefined
-    if (filePath) {
-      this.filePath = filePath;
-      return this.saveFile();
-    }
+    if (!filePath) return false;
+
+    this.filePath = filePath;
+    return this.saveFile();
   }
 
 }
