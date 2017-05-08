@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let containerEl = document.getElementById("container");
   // It's supposed to be lightweight, so this should be the only editor instance that will be created.
   // To support tabs, we could create multiple instances.
-  let currentEditor = new MonacoEditor(containerEl, "./test.md", "blableblibloblu");
+  let currentEditor = new MonacoEditor(containerEl, "", "");
 
   document.addEventListener('keydown', e => {
     // e.metaKey is a flag for CMD. e.ctrlKey is the same flag for CTRL
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Save File and Save New File
     if (e.metaKey && e.keyCode === 83) {
       e.preventDefault();
-      if (e.shiftKey) {
+      if (e.shiftKey || currentEditor.filePath === "") {
         currentEditor.saveNewFile();
       } else {
         currentEditor.saveFile();
