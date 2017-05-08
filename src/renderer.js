@@ -15,6 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', e => {
     // e.metaKey is a flag for CMD. e.ctrlKey is the same flag for CTRL
 
+    // New File
+
+    if (e.metaKey && e.keyCode === 78) {
+      e.preventDefault();
+      currentEditor.newFile();
+    }
+
     // Open File
     if (e.metaKey && e.keyCode === 79) {
       e.preventDefault();

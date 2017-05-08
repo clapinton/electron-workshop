@@ -28,6 +28,11 @@ class MonacoEditor {
     this.filePath = filePath;
   }
 
+  newFile() {
+    this.editorEl.setValue("");
+    this.filePath = "";
+  }
+
   saveFile() {
     let error;
     let editorValue = this.editorEl.getValue();
